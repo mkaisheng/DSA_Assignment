@@ -128,6 +128,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Assignment.cpp" />
+    <ClCompile Include="Administrator.cpp" />
+    <ClCompile Include="Dictionary.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="games.csv" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Administrator.h" />
+    <ClInclude Include="Dictionary.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
