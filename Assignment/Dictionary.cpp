@@ -1,5 +1,12 @@
 #include "Dictionary.h"
 
+string trim(const string& s) {
+    size_t start = s.find_first_not_of(" \t\r\n");
+    size_t end = s.find_last_not_of(" \t\r\n");
+    if (start == string::npos) return "";
+    return s.substr(start, end - start + 1);
+}
+
 Dictionary::Dictionary() {
     size = 0;
     for (int i = 0; i < TABLE_SIZE; i++) {
@@ -8,7 +15,7 @@ Dictionary::Dictionary() {
 }
 
 Dictionary::~Dictionary() {
-	clear();
+    clear();
 }
 
 int Dictionary::hashFunction(const char* str) {
@@ -17,6 +24,7 @@ int Dictionary::hashFunction(const char* str) {
         hash = (hash * 31) + *str;
         str++;
     }
+    if (hash < 0) hash = -hash;
     return hash % TABLE_SIZE;
 }
 
@@ -27,8 +35,7 @@ void Dictionary::insert(const char* name, int minP, int maxP, int minT, int maxT
 
     // Check if name already exists
     while (entry != NULL) {
-        if (strcmp(entry->name, name) == 0) {
-            // Add to duplicate list
+        if (entry->name == name) {
             GameNode* newNode = new GameNode;
             newNode->minPlayers = minP;
             newNode->maxPlayers = maxP;
@@ -43,9 +50,9 @@ void Dictionary::insert(const char* name, int minP, int maxP, int minT, int maxT
         entry = entry->next;
     }
 
-    // Create new dictionary entry if key doesn't exist
+    // Create new dictionary entry
     DictEntry* newEntry = new DictEntry;
-    strcpy(newEntry->name, name);
+    newEntry->name = name;  // std::string handles copy safely
     newEntry->head = NULL;
 
     GameNode* newNode = new GameNode;
@@ -70,11 +77,11 @@ void Dictionary::search(const char* name) {
     DictEntry* entry = items[index];
 
     while (entry != NULL) {
-        if (strcmp(entry->name, name) == 0) {
+        if (entry->name == string(name)){
             GameNode* curr = entry->head;
 
             while (curr != NULL) {
-                cout << "Game: " << name << endl;
+                cout << "Game: " << entry->name << endl;
                 cout << "Players: " << curr->minPlayers << " - " << curr->maxPlayers << endl;
                 cout << "Playtime: " << curr->minPlayTime << " - " << curr->maxPlayTime << endl;
                 cout << "Year: " << curr->yearPublished << endl;
@@ -97,7 +104,6 @@ void Dictionary::clear() {
         while (entry != NULL) {
             GameNode* node = entry->head;
 
-            // Delete duplicate nodes
             while (node != NULL) {
                 GameNode* tempNode = node;
                 node = node->next;
@@ -111,4 +117,54 @@ void Dictionary::clear() {
 
         items[i] = NULL;
     }
+}
+
+void Dictionary::LoadCSV(string file) {
+    string line;
+    ifstream inFile(file);
+
+    if (!inFile.is_open()) {
+        cerr << "Unable to open file " << file << endl;
+        return;
+    }
+
+    // Skip header
+    getline(inFile, line);
+
+    while (getline(inFile, line)) {
+        stringstream ss(line);
+
+        string name, minP, maxP, maxT, minT, year;
+
+        getline(ss, name, ',');
+        getline(ss, minP, ',');
+        getline(ss, maxP, ',');
+        getline(ss, maxT, ',');
+        getline(ss, minT, ',');
+        getline(ss, year, ',');
+
+        // Trim spaces
+        name = trim(name);
+        minP = trim(minP);
+        maxP = trim(maxP);
+        minT = trim(minT);
+        maxT = trim(maxT);
+        year = trim(year);
+
+        try {
+            insert(
+                name.c_str(),
+                stoi(minP),
+                stoi(maxP),
+                stoi(minT),
+                stoi(maxT),
+                stoi(year)
+            );
+        }
+        catch (...) {
+            cout << "Invalid stoi row skipped: " << line << endl;
+        }
+    }
+
+    inFile.close();
 }

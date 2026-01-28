@@ -1,5 +1,7 @@
-#include <string>
 #include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
 #pragma once
 using namespace std;
 
@@ -14,7 +16,7 @@ struct GameNode {
 };
 
 struct DictEntry {
-    char name[100];        // key
+    string name;       // key
     GameNode* head;        // list of duplicates
     DictEntry* next;       // collision chain
 };
@@ -33,6 +35,7 @@ public:
     Dictionary();
     ~Dictionary();
 
+    void LoadCSV(string file);
     void insert(const char* name, int minP, int maxP, int minT, int maxT, int year);
     void search(const char* name);
     void clear();
