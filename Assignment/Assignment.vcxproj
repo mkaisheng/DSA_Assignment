@@ -130,6 +130,8 @@
     <ClCompile Include="Assignment.cpp" />
     <ClCompile Include="Administrator.cpp" />
     <ClCompile Include="Dictionary.cpp" />
+    <ClCompile Include="LinkedList.cpp" />
+    <ClCompile Include="Member.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="games.csv" />
@@ -137,6 +139,8 @@
   <ItemGroup>
     <ClInclude Include="Administrator.h" />
     <ClInclude Include="Dictionary.h" />
+    <ClInclude Include="LinkedList.h" />
+    <ClInclude Include="Member.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
