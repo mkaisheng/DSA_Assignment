@@ -11,6 +11,9 @@ struct GameNode {
     int minPlayTime;
     int maxPlayTime;
     int yearPublished;
+    
+    bool isBorrowed = false;       // True if taken
+    string borrowedBy = "";        // Stores Member ID
 
     GameNode* next;
 };
@@ -29,14 +32,16 @@ private:
     DictEntry* items[TABLE_SIZE];
     int size;
 
-    int hashFunction(const char* str);
+    int hashFunction(string str);
 
 public:
     Dictionary();
     ~Dictionary();
 
     void LoadCSV(string file);
-    void insert(const char* name, int minP, int maxP, int minT, int maxT, int year);
-    void search(const char* name);
+    void insert(string name, int minP, int maxP, int minT, int maxT, int year);
+    void search(string name);
     void clear();
+    bool borrowGame(string gameName, string studentID);
+    bool returnGame(string gameName, string studentID);
 };

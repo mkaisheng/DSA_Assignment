@@ -18,17 +18,18 @@ Dictionary::~Dictionary() {
     clear();
 }
 
-int Dictionary::hashFunction(const char* str) {
+int Dictionary::hashFunction(string key) {
     int hash = 0;
-    while (*str) {
-        hash = (hash * 31) + *str;
-        str++;
+    for (char c : key) {
+        hash = (hash * 31) + c;
     }
+
     if (hash < 0) hash = -hash;
     return hash % TABLE_SIZE;
 }
 
-void Dictionary::insert(const char* name, int minP, int maxP, int minT, int maxT, int year) {
+void Dictionary::insert(string name, int minP, int maxP, int minT, int maxT, int year) {
+    // Pass the string directly to the new hashFunction
     int index = hashFunction(name);
 
     DictEntry* entry = items[index];
@@ -43,6 +44,9 @@ void Dictionary::insert(const char* name, int minP, int maxP, int minT, int maxT
             newNode->maxPlayTime = maxT;
             newNode->yearPublished = year;
 
+            newNode->isBorrowed = false;
+            newNode->borrowedBy = "";
+
             newNode->next = entry->head;
             entry->head = newNode;
             return;
@@ -52,7 +56,7 @@ void Dictionary::insert(const char* name, int minP, int maxP, int minT, int maxT
 
     // Create new dictionary entry
     DictEntry* newEntry = new DictEntry;
-    newEntry->name = name;  // std::string handles copy safely
+    newEntry->name = name;  
     newEntry->head = NULL;
 
     GameNode* newNode = new GameNode;
@@ -71,13 +75,13 @@ void Dictionary::insert(const char* name, int minP, int maxP, int minT, int maxT
     size++;
 }
 
-void Dictionary::search(const char* name) {
+void Dictionary::search(string name) {
     int index = hashFunction(name);
 
     DictEntry* entry = items[index];
 
     while (entry != NULL) {
-        if (entry->name == string(name)){
+        if (entry->name == name) {
             GameNode* curr = entry->head;
 
             while (curr != NULL) {
@@ -143,7 +147,6 @@ void Dictionary::LoadCSV(string file) {
         getline(ss, minT, ',');
         getline(ss, year, ',');
 
-        // Trim spaces
         name = trim(name);
         minP = trim(minP);
         maxP = trim(maxP);
@@ -153,7 +156,7 @@ void Dictionary::LoadCSV(string file) {
 
         try {
             insert(
-                name.c_str(),
+                name,
                 stoi(minP),
                 stoi(maxP),
                 stoi(minT),
@@ -167,4 +170,49 @@ void Dictionary::LoadCSV(string file) {
     }
 
     inFile.close();
+}
+
+bool Dictionary::borrowGame(string gameName, string studentID) {
+    int index = hashFunction(gameName);
+    DictEntry* entry = items[index];
+
+    while (entry != NULL) {
+        if (entry->name == gameName) {
+            GameNode* copy = entry->head;
+            while (copy != NULL) {
+                if (!copy->isBorrowed) {
+                    copy->isBorrowed = true;
+                    copy->borrowedBy = studentID;
+                    return true; 
+                }
+                copy = copy->next;
+            }
+            cout << "All copies of " << gameName << " are currently borrowed.\n";
+            return false;
+        }
+        entry = entry->next;
+    }
+    cout << "Game not found in library.\n";
+    return false;
+}
+
+bool Dictionary::returnGame(string gameName, string studentID) {
+    int index = hashFunction(gameName);
+    DictEntry* entry = items[index];
+
+    while (entry != NULL) {
+        if (entry->name == gameName) {
+            GameNode* copy = entry->head;
+            while (copy != NULL) {
+                if (copy->isBorrowed && copy->borrowedBy == studentID) {
+                    copy->isBorrowed = false;
+                    copy->borrowedBy = "";
+                    return true;
+                }
+                copy = copy->next;
+            }
+        }
+        entry = entry->next;
+    }
+    return false;
 }
