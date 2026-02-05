@@ -271,3 +271,26 @@ void Dictionary::displayBorrowedGames() {
         cout << "No games are currently borrowed.\n";
     }
 }
+
+void Dictionary::displayGamesByPlayers(int numPlayers) {
+    bool found = false;
+    cout << "\n=== Games for " << numPlayers << " Players ===\n";
+    for (int i = 0; i < TABLE_SIZE; i++) {
+        DictEntry* entry = items[i];
+        while (entry != nullptr) {
+            GameNode* current = entry->head;
+            while (current != nullptr) {
+                if (current->minPlayers <= numPlayers && current->maxPlayers >= numPlayers) {
+                    cout << "Game: " << entry->name << endl;
+					cout << "Players: " << current->minPlayers << "-" << current->maxPlayers << endl;
+                    found = true;
+                }
+                current = current->next;
+            }
+            entry = entry->next;
+        }
+    }
+    if (!found) {
+        cout << "No games found for " << numPlayers << " players.\n";
+    }
+}

@@ -53,4 +53,5 @@ public:
     void displayBorrowedGames();
     void saveToCSV(const string& filename);
     bool remove(const string& gameName);
+	void displayGamesByPlayers(int numPlayers);
 };
