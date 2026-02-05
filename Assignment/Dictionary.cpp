@@ -18,80 +18,50 @@ Dictionary::~Dictionary() {
     clear();
 }
 
-int Dictionary::hashFunction(string key) {
+int Dictionary::hashFunction(const string& key) {
     int hash = 0;
     for (char c : key) {
         hash = (hash * 31) + c;
     }
-
-    if (hash < 0) hash = -hash;
-    return hash % TABLE_SIZE;
+    return abs(hash) % TABLE_SIZE;
 }
 
-void Dictionary::insert(string name, int minP, int maxP, int minT, int maxT, int year) {
-    // Pass the string directly to the new hashFunction
-    int index = hashFunction(name);
 
+void Dictionary::insert(const string& name, int minP, int maxP, int minT, int maxT, int year) {
+    int index = hashFunction(name);
     DictEntry* entry = items[index];
 
-    // Check if name already exists
-    while (entry != NULL) {
+    while (entry) {
         if (entry->name == name) {
-            GameNode* newNode = new GameNode;
-            newNode->minPlayers = minP;
-            newNode->maxPlayers = maxP;
-            newNode->minPlayTime = minT;
-            newNode->maxPlayTime = maxT;
-            newNode->yearPublished = year;
-
-            newNode->isBorrowed = false;
-            newNode->borrowedBy = "";
-
-            newNode->next = entry->head;
+            GameNode* newNode = new GameNode{
+                minP, maxP, minT, maxT, year, false, "", entry->head
+            };
             entry->head = newNode;
             return;
         }
         entry = entry->next;
     }
 
-    // Create new dictionary entry
     DictEntry* newEntry = new DictEntry;
-    newEntry->name = name;  
-    newEntry->head = NULL;
-
-    GameNode* newNode = new GameNode;
-    newNode->minPlayers = minP;
-    newNode->maxPlayers = maxP;
-    newNode->minPlayTime = minT;
-    newNode->maxPlayTime = maxT;
-    newNode->yearPublished = year;
-    newNode->next = NULL;
-
-    newEntry->head = newNode;
-
+    newEntry->name = name;
+    newEntry->head = new GameNode{ minP, maxP, minT, maxT, year, false, "", nullptr };
     newEntry->next = items[index];
     items[index] = newEntry;
-
-    size++;
 }
 
-void Dictionary::search(string name) {
+void Dictionary::search(const string& name) {
     int index = hashFunction(name);
-
     DictEntry* entry = items[index];
 
-    while (entry != NULL) {
+    while (entry) {
         if (entry->name == name) {
-            GameNode* curr = entry->head;
-
-            while (curr != NULL) {
+            for (GameNode* curr = entry->head; curr; curr = curr->next) {
                 cout << "Game: " << entry->name << endl;
-                cout << "Players: " << curr->minPlayers << " - " << curr->maxPlayers << endl;
-                cout << "Playtime: " << curr->minPlayTime << " - " << curr->maxPlayTime << endl;
+                cout << "Players: " << curr->minPlayers << "-" << curr->maxPlayers << endl;
+                cout << "Playtime: " << curr->minPlayTime << "-" << curr->maxPlayTime << endl;
                 cout << "Year: " << curr->yearPublished << endl;
-                cout << "--------------------" << endl;
-
-                curr = curr->next;
+                cout << "Status: " << (curr->isBorrowed ? "Borrowed" : "Available") << endl;
+                cout << "--------------------\n";
             }
             return;
         }
@@ -123,21 +93,19 @@ void Dictionary::clear() {
     }
 }
 
-void Dictionary::LoadCSV(string file) {
-    string line;
+void Dictionary::LoadCSV(const string& file) {
     ifstream inFile(file);
+    string line;
 
-    if (!inFile.is_open()) {
+    if (!inFile) {
         cerr << "Unable to open file " << file << endl;
         return;
     }
 
-    // Skip header
-    getline(inFile, line);
+    getline(inFile, line); // skip header
 
     while (getline(inFile, line)) {
         stringstream ss(line);
-
         string name, minP, maxP, maxT, minT, year;
 
         getline(ss, name, ',');
@@ -147,72 +115,159 @@ void Dictionary::LoadCSV(string file) {
         getline(ss, minT, ',');
         getline(ss, year, ',');
 
-        name = trim(name);
-        minP = trim(minP);
-        maxP = trim(maxP);
-        minT = trim(minT);
-        maxT = trim(maxT);
-        year = trim(year);
-
         try {
             insert(
-                name,
-                stoi(minP),
-                stoi(maxP),
-                stoi(minT),
-                stoi(maxT),
-                stoi(year)
+                trim(name),
+                stoi(trim(minP)),
+                stoi(trim(maxP)),
+                stoi(trim(minT)),
+                stoi(trim(maxT)),
+                stoi(trim(year))
             );
         }
         catch (...) {
-            cout << "Invalid stoi row skipped: " << line << endl;
+            cout << "Invalid row skipped: " << line << endl;
         }
     }
-
-    inFile.close();
 }
 
-bool Dictionary::borrowGame(string gameName, string studentID) {
+bool Dictionary::borrowGame(const string& gameName, const string& studentID) {
     int index = hashFunction(gameName);
     DictEntry* entry = items[index];
 
-    while (entry != NULL) {
+    while (entry) {
         if (entry->name == gameName) {
-            GameNode* copy = entry->head;
-            while (copy != NULL) {
+            for (GameNode* copy = entry->head; copy; copy = copy->next) {
                 if (!copy->isBorrowed) {
                     copy->isBorrowed = true;
                     copy->borrowedBy = studentID;
-                    return true; 
+                    return true;
                 }
-                copy = copy->next;
             }
-            cout << "All copies of " << gameName << " are currently borrowed.\n";
             return false;
         }
         entry = entry->next;
     }
-    cout << "Game not found in library.\n";
     return false;
 }
 
-bool Dictionary::returnGame(string gameName, string studentID) {
+
+bool Dictionary::returnGame(const string& gameName, const string& studentID) {
     int index = hashFunction(gameName);
     DictEntry* entry = items[index];
 
-    while (entry != NULL) {
+    while (entry) {
         if (entry->name == gameName) {
-            GameNode* copy = entry->head;
-            while (copy != NULL) {
+            for (GameNode* copy = entry->head; copy; copy = copy->next) {
                 if (copy->isBorrowed && copy->borrowedBy == studentID) {
                     copy->isBorrowed = false;
-                    copy->borrowedBy = "";
+                    copy->borrowedBy.clear();
                     return true;
                 }
-                copy = copy->next;
             }
         }
         entry = entry->next;
     }
     return false;
+}
+
+bool Dictionary::remove(const string& gameName) {
+    int index = hashFunction(gameName);
+
+    DictEntry* curr = items[index];
+    DictEntry* prev = nullptr;
+
+    while (curr != nullptr) {
+        if (curr->name == gameName) {
+
+            // Delete all game copies
+            GameNode* node = curr->head;
+            while (node != nullptr) {
+                GameNode* temp = node;
+                node = node->next;
+                delete temp;
+            }
+
+            // Remove DictEntry from chain
+            if (prev == nullptr) {
+                items[index] = curr->next;
+            }
+            else {
+                prev->next = curr->next;
+            }
+
+            delete curr;
+            return true;
+        }
+
+        prev = curr;
+        curr = curr->next;
+    }
+
+    return false; // Game not found
+}
+
+void Dictionary::saveToCSV(const string& filename) {
+    ofstream out(filename);
+
+    if (!out.is_open()) {
+        cerr << "Unable to write to file " << filename << endl;
+        return;
+    }
+
+    // CSV header
+    out << "name,minplayers,maxplayers,maxplaytime,minplaytime,yearpublished\n";
+
+    for (int i = 0; i < TABLE_SIZE; i++) {
+        DictEntry* entry = items[i];
+
+        while (entry != nullptr) {
+            GameNode* node = entry->head;
+
+            while (node != nullptr) {
+                out << entry->name << ","
+                    << node->minPlayers << ","
+                    << node->maxPlayers << ","
+                    << node->maxPlayTime << ","
+                    << node->minPlayTime << ","
+                    << node->yearPublished << "\n";
+
+                node = node->next;
+            }
+
+            entry = entry->next;
+        }
+    }
+
+    out.close();
+}
+
+
+void Dictionary::displayBorrowedGames() {
+    bool found = false;
+
+    cout << "\n=== Borrowed Games Summary ===\n";
+
+    for (int i = 0; i < TABLE_SIZE; i++) {
+        DictEntry* entry = items[i];
+
+        while (entry != nullptr) {
+            GameNode* current = entry->head;
+
+            while (current != nullptr) {
+                if (current->isBorrowed) {
+                    cout << "Game: " << entry->name << endl;
+                    cout << "Borrowed by: " << current->borrowedBy << endl;
+                    cout << "---------------------------\n";
+                    found = true;
+                }
+                current = current->next;
+            }
+            entry = entry->next;
+        }
+    }
+
+    if (!found) {
+        cout << "No games are currently borrowed.\n";
+    }
 }

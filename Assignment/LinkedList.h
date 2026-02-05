@@ -1,3 +1,4 @@
+
 #include <string>
 #include <iostream>
 
@@ -7,6 +8,7 @@ struct ListNode {
 	string value;
 	ListNode* next;
 };
+
 class LinkedList
 {
 private:

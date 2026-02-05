@@ -1,3 +1,8 @@
+#ifndef DICTIONARY_H
+
+#endif // !DICTIONARY_H
+#define DICTIONARY_H
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -32,16 +37,20 @@ private:
     DictEntry* items[TABLE_SIZE];
     int size;
 
-    int hashFunction(string str);
+    int hashFunction(const string& key);
 
 public:
     Dictionary();
     ~Dictionary();
 
-    void LoadCSV(string file);
-    void insert(string name, int minP, int maxP, int minT, int maxT, int year);
-    void search(string name);
+    void LoadCSV(const string& file);
+    void insert(const string& name, int minP, int maxP, int minT, int maxT, int year);
+    void search(const string& name);
     void clear();
-    bool borrowGame(string gameName, string studentID);
-    bool returnGame(string gameName, string studentID);
+
+    bool borrowGame(const string& gameName, const string& studentID);
+    bool returnGame(const string& gameName, const string& studentID);
+    void displayBorrowedGames();
+    void saveToCSV(const string& filename);
+    bool remove(const string& gameName);
 };
