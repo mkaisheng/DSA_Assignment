@@ -1,78 +1,139 @@
 #include "Administrator.h"
+#include <iostream>
 
-void Administrator::addGame(Dictionary& games) {
-    string name;
-    int minP, maxP, minT, maxT, year;
+using namespace std;
 
-    cin.ignore();
-    cout << "Enter game name: ";
-    getline(cin, name);
+/* =========================================================
+   Add Game (to Master List)
+   ========================================================= */
+void Administrator::addGame(GameNode*& gameHead) {
+    GameNode* newNode = new GameNode();
 
-    cout << "Min players: ";
-    cin >> minP;
-    cout << "Max players: ";
-    cin >> maxP;
-    cout << "Min playtime: ";
-    cin >> minT;
-    cout << "Max playtime: ";
-    cin >> maxT;
-    cout << "Year published: ";
-    cin >> year;
+    cout << "Enter Game Name: ";
+    getline(cin, newNode->name);
+    cout << "Min Players: "; cin >> newNode->minPlayers;
+    cout << "Max Players: "; cin >> newNode->maxPlayers;
+    cout << "Min Time (min): "; cin >> newNode->minPlayTime;
+    cout << "Max Time (min): "; cin >> newNode->maxPlayTime;
+    cout << "Year: "; cin >> newNode->yearPublished;
+    cin.ignore(); // Clear buffer
 
-    games.insert(name, minP, maxP, minT, maxT, year);
-    games.saveToCSV(GAME_CSV);
-    cout << "Game added successfully.\n";
+    // Insert at Head of Master List
+    newNode->next = gameHead;
+    gameHead = newNode;
+
+    cout << ">> Game added successfully.\n";
 }
 
-void Administrator::removeGame(Dictionary& games) {
-    string name;
+/* =========================================================
+   Remove Game (from Master List)
+   ========================================================= */
+void Administrator::removeGame(GameNode*& gameHead) {
+    if (!gameHead) return;
 
-    cin.ignore();
-    cout << "Enter game name to remove: ";
-    getline(cin, name);
+    string target;
+    cout << "Enter name of game to remove: ";
+    getline(cin, target);
 
-    if (games.remove(name)) {
-        games.saveToCSV(GAME_CSV);
-        cout << "Game removed successfully.\n";
+    GameNode* curr = gameHead;
+    GameNode* prev = nullptr;
+
+    while (curr && curr->name != target) {
+        prev = curr;
+        curr = curr->next;
+    }
+
+    if (!curr) {
+        cout << ">> Game not found.\n";
+        return;
+    }
+
+    if (!prev) {
+        gameHead = curr->next; // Removing head
     }
     else {
-        cout << "Game not found.\n";
+        prev->next = curr->next; // Removing middle/tail
     }
+
+    delete curr;
+    cout << ">> " << target << " deleted from system.\n";
 }
 
-
-void Administrator::addMember(LinkedList& members) {
+/* =========================================================
+   Add Member (to Member List)
+   ========================================================= */
+void Administrator::addMember(MemberNode*& memberHead) {
     string id, name, phone;
 
-    cin.ignore();
-    cout << "Member ID: ";
-    getline(cin, id);
+    cout << "Enter Member ID: "; getline(cin, id);
+    cout << "Enter Name: "; getline(cin, name);
+    cout << "Enter Phone: "; getline(cin, phone);
 
-    cout << "Name: ";
-    getline(cin, name);
-        
-    cout << "Phone number: ";
-    getline(cin, phone);
+    // Create the Member Object
+    Member* newMemberObj = new Member(id, name, phone);
 
-    // Only store ID in LinkedList
-    members.insert(id);
+    // Create the List Node wrapper
+    MemberNode* newNode = new MemberNode();
+    newNode->data = newMemberObj;
+    newNode->next = memberHead; // Insert at front
 
-    cout << "Member added successfully.\n";
+    memberHead = newNode;
+    cout << ">> Member " << name << " registered.\n";
 }
-void Administrator::removeMember(LinkedList& members) {
-    string id;
 
-    cin.ignore();
-    cout << "Enter member ID to remove: ";
+/* =========================================================
+   Remove Member
+   ========================================================= */
+void Administrator::removeMember(MemberNode*& memberHead) {
+    if (!memberHead) return;
+
+    string id;
+    cout << "Enter Member ID to remove: ";
     getline(cin, id);
 
-    if (members.search(id)) {
-        members.remove(id);
-        cout << "Member removed successfully.\n";
+    MemberNode* curr = memberHead;
+    MemberNode* prev = nullptr;
+
+    while (curr && curr->data->getID() != id) {
+        prev = curr;
+        curr = curr->next;
+    }
+
+    if (!curr) {
+        cout << ">> Member not found.\n";
+        return;
+    }
+
+    if (!prev) {
+        memberHead = curr->next;
+    }
+    else {
+        prev->next = curr->next;
+    }
+
+    // Clean up memory
+    delete curr->data; // Delete the Member object
+    delete curr;       // Delete the Node wrapper
+    cout << ">> Member removed.\n";
+}
+
+/* =========================================================
+   Display Helpers
+   ========================================================= */
+void Administrator::displayAllGames(GameNode* gameHead) {
+    cout << "\n--- Library Inventory ---\n";
+    while (gameHead) {
+        cout << "- " << gameHead->name << " (" << gameHead->yearPublished << ")\n";
+        gameHead = gameHead->next;
     }
 }
 
-
-void Administrator::displayBorrowSummary(Dictionary& games) {
-    games.displayBorrowedGames();
+void Administrator::displayBorrowSummary(MemberNode* memberHead) {
+    cout << "\n=== BORROWING REPORT ===\n";
+    while (memberHead) {
+        cout << "Member: " << memberHead->data->getName() << "\n";
+        memberHead->data->printBorrowedGames();
+        cout << "------------------------\n";
+        memberHead = memberHead->next;
+    }
 }

@@ -1,27 +1,36 @@
-#ifndef MEMBER_H
-
-#endif // !MEMBER_H
+#ifndef MEMBER_H // 1. Guard starts here
 #define MEMBER_H
+
 #include <string>
 #include <iostream>
-#include "LinkedList.h"
-#include "Dictionary.h"
+#include "GameList.h"
 
-class Member
-{
+using namespace std;
+
+class Member {
 private:
-	string memberID;
-	string name;
-	string phoneNumber;
-	
-	LinkedList borrowedGames;
-public:
-	Member(string id, string n, string phone);
-	string getID();
-	string getName();
+    string memberID;
+    string name;
+    string phoneNumber;
 
-	void borrowGame(Dictionary& dict,string gameName);
-	void returnGame(Dictionary& dict, string gameName);
-	void printBorrowedGames();
+    GameNode* borrowedHead;
+
+public:
+    // Constructor
+    Member(string id, string n, string phone);
+
+    // Getters
+    string getID() const;
+    string getName() const;
+
+   
+	void borrowGame(GameNode* game);
+
+    // We return the game, removing it from 'borrowedHead'
+    void returnGame(string gameName);
+
+    // Display the list of games this member has
+    void printBorrowedGames();
 };
 
+#endif // !MEMBER_H  // 2. Guard ends here
