@@ -63,7 +63,7 @@ public:
 	 int countGames();
 	 void removeGame(const string& name);
 	 void mergeSort(SortMode mode);
-	
+	 void displayGamesByPlayers(int numPlayers);
 
 	void rebuildIndex();
 };

@@ -33,6 +33,7 @@ void displayUserMenu() {
     cout << "1. Admin\n";
     cout << "2. Member\n";
 	cout << "3. Search for a Game\n";
+    cout << "4. Display games based on number of players\n";
     cout << "0. Exit Program\n";
     cout << "Enter choice: ";
 }
@@ -335,7 +336,7 @@ int main() {
                     cout << "\nPlayers: " << game->minPlayers << " - " << game->maxPlayers;
                     cout << "\nPlay time: " << game->minPlayTime << " mins - " << game->maxPlayTime << " mins";
                     cout << "\nYear published: " << game->yearPublished;
-                    cout << "\nBorrowed: " << borrowed;
+                    cout << "\nBorrowed: " << borrowed << "\n";
                 }
                 else {
                     cout << "Game not found in library.\n";
@@ -345,7 +346,40 @@ int main() {
                 cout << "No game name entered.\n";
             }
             break;
-			  }
+		}
+        case 4: {
+            int numPlayers;
+            cout << "Enter number of players: ";
+            cin >> numPlayers;
+
+            displaySortMenu();
+
+            int sortChoice;
+            cin >> sortChoice;
+
+            switch (sortChoice) {
+            case 1:
+                games.mergeSort(SortMode::NAME);
+                break;
+            case 2:
+                games.mergeSort(SortMode::MIN_PLAYERS);
+                break;
+            case 3:
+                games.mergeSort(SortMode::MAX_PLAYERS);
+                break;
+            case 4:
+                games.mergeSort(SortMode::YEAR);
+                break;
+            case 0:
+                cout << "Showing current order.\n";
+                break;
+            default:
+                cout << "Invalid choice. Showing current order.\n";
+            }
+
+            games.displayGamesByPlayers(numPlayers);
+            break;
+        }
         case 0:
             cout << "Exiting program...\n";
             break;
