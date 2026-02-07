@@ -327,3 +327,31 @@ void GameList::mergeSortInternal(GameNode*& node) {
 
     node = mergeSorted(a, b);
 }
+
+/* =========================
+   Display Games by Players
+   ========================= */
+void GameList::displayGamesByPlayers(int numPlayers) {
+    cout << "\n--- Games for " << numPlayers << " Players ---\n";
+
+    GameNode* curr = head;
+    bool found = false;
+
+    while (curr) {
+        if (curr->minPlayers <= numPlayers &&
+            numPlayers <= curr->maxPlayers) {
+
+            cout << curr->name << " ("
+                << curr->minPlayers << " - "
+                << curr->maxPlayers << " players, "
+                << curr->yearPublished << ")\n";
+
+            found = true;
+        }
+        curr = curr->next;
+    }
+
+    if (!found) {
+        cout << "No games available for this number of players.\n";
+    }
+}

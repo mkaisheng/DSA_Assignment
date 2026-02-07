@@ -32,6 +32,8 @@ void displayUserMenu() {
     cout << "\n--- User Menu ---\n";
     cout << "1. Admin \n";
     cout << "2. Member\n";
+	cout << "3. Search for a Game\n";
+	cout << "4. Display games based on number of players\n";
     cout << "0. Exit Program\n";
     cout << "Enter choice: ";
 }
@@ -180,6 +182,39 @@ int main() {
             } while (memberChoice != 0);
             // === END NESTED LOOP ===
             break; // Break out of Case 2 (back to main menu)
+        }
+        case 3: {
+            cout << "Enter the name of the game to search: ";
+            string gameName;
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            getline(cin, gameName);
+            if (!gameName.empty()) {
+                GameNode* game = games.searchAVL(gameName);
+                string borrowed = "No";
+                if (game) {
+                    if (game->isBorrowed == 1)
+                        borrowed = "Yes";
+                    cout << "Name: " << game->name;
+                    cout << "\nPlayers: " << game->minPlayers << " - " << game->maxPlayers;
+                    cout << "\nPlay time: " << game->minPlayTime << " mins - " << game->maxPlayTime << " mins";
+                    cout << "\nYear published: " << game->yearPublished;
+                    cout << "\nBorrowed: " << borrowed;
+                }
+                else {
+                    cout << "Game not found in library.\n";
+                }
+            }
+            else {
+                cout << "No game name entered.\n";
+            }
+            break;
+			  }
+        case 4: {
+            int numPlayers;
+            cout << "Enter number of players: ";
+            cin >> numPlayers;
+            games.displayGamesByPlayers(numPlayers);
+			break;
         }
         case 0:
             cout << "Exiting program...\n";

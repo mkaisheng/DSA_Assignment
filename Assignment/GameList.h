@@ -44,14 +44,14 @@ public:
 	GameList();
 	~GameList();
 
-	void insertGame( GameNode* newNode);
+	 void insertGame( GameNode* newNode);
 	 void loadCSV(const string& filename);
 	 void displayGames();
 	 GameNode* searchAVL(const string& name);
 	 int countGames();
 	 void removeGame(const string& name);
 	 void mergeSort();
+	 void displayGamesByPlayers(int numPlayers);
 	
-
 	void rebuildIndex();
 };
