@@ -18,9 +18,7 @@ Member::Member(string id, string n, string phone) {
 string Member::getID() const { return memberID; }
 string Member::getName() const { return name; }
 
-/* =========================================================
-   Helper: Get Current Timestamp
-   ========================================================= */
+//helper: get c urrent timestamp
 string getCurrentTimestamp() {
     // Get current time using modern C++ chrono
     auto now = chrono::system_clock::now();
@@ -40,9 +38,7 @@ string getCurrentTimestamp() {
     return oss.str();
 }
 
-/* =========================================================
-   Helper: Write to Record File
-   ========================================================= */
+//helper: write to record file
 void writeToRecord(const string& memberID, const string& memberName, 
                    const string& gameName, const string& action) {
     ofstream recordFile("record.txt", ios::app);
@@ -58,12 +54,7 @@ void writeToRecord(const string& memberID, const string& memberName,
     recordFile.close();
 }
 
-/* =========================================================
-   Borrow Game
-   - Creates a NEW GameNode copy for the member's list
-   - Marks the original game as borrowed
-   - Records transaction to file
-   ========================================================= */
+//borrow game
 void Member::borrowGame(GameNode* game) {
     if (!game) {
         cout << "Error: Game not found.\n";
@@ -102,12 +93,7 @@ void Member::borrowGame(GameNode* game) {
     cout << "Success: " << name << " borrowed \"" << game->name << "\".\n";
 }
 
-/* =========================================================
-   Return Game
-   - Removes game from member's borrowed list
-   - Marks original game as available
-   - Records transaction to file
-   ========================================================= */
+//return game
 void Member::returnGame(const string& gameName, GameList* gameList) {
     GameNode* curr = borrowedHead;
     GameNode* prev = nullptr;
@@ -142,15 +128,12 @@ void Member::returnGame(const string& gameName, GameList* gameList) {
     // Record to file
     writeToRecord(memberID, name, gameName, "RETURNED");
     
-    // Delete the borrowed copy
     delete curr;
     
     cout << "Success: \"" << gameName << "\" returned by " << name << ".\n";
 }
 
-/* =========================================================
-   Print Borrowed Games
-   ========================================================= */
+
 void Member::printBorrowedGames() {
     cout << "Games borrowed by " << name << ":\n";
     if (!borrowedHead) {
@@ -170,9 +153,7 @@ void Member::printBorrowedGames() {
     cout << "------------------------\n";
 }
 
-/* =========================================================
-   Destructor - Clean up borrowed list
-   ========================================================= */
+
 Member::~Member() {
     GameNode* curr = borrowedHead;
     while (curr) {
@@ -190,8 +171,6 @@ void Member::recordGamePlay( const string& gameName, const string& participantID
         return;
     }
 
-    // Format:
-    // GameName | M001,M004,M007 | M004
     outFile << gameName << " , "
         << participantIDs << " , "
         << winnerID << endl;

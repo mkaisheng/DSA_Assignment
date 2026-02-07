@@ -3,9 +3,7 @@
 
 using namespace std;
 
-/* =========================================================
-   Add Game (to Master List)
-   ========================================================= */
+//add game
 void Administrator::addGame(GameList& games) {
     GameNode* newNode = new GameNode();
 
@@ -18,52 +16,25 @@ void Administrator::addGame(GameList& games) {
     cout << "Year: "; cin >> newNode->yearPublished;
     cin.ignore(); // Clear buffer
 
-    // Insert at Head of Master List
     games.insertGame(newNode);
-    //newNode->next = gameHead;
-    //gameHead = newNode;
 
     cout << ">> Game added successfully.\n";
 }
 
-/* =========================================================
-   Remove Game (from Master List)
-   ========================================================= */
+
+//Remove Game (from Master List)
+
 void Administrator::removeGame(GameList& games) {
-    //if (!gameHead) return;
 
     string target;
     cout << "Enter name of game to remove: ";
     getline(cin, target);
-
-    /* GameNode* curr = gameHead;
-    GameNode* prev = nullptr;
-
-    while (curr && curr->name != target) {
-        prev = curr;
-        curr = curr->next;
-    }
-
-    if (!curr) {
-        cout << ">> Game not found.\n";
-        return;
-    }
-
-    if (!prev) {
-        gameHead = curr->next; // Removing head
-    }
-    else {
-        prev->next = curr->next; // Removing middle/tail
-    }
-
-    delete curr; */
     games.removeGame(target);
     cout << ">> " << target << " deleted from system.\n";
 }
 
-/* =========================================================
-   Add Member (to Member List)
-   ========================================================= */
+
+ //Add Member (to Member List)
 void Administrator::addMember(MemberNode*& memberHead) {
     string id, name, phone;
 
@@ -83,9 +54,7 @@ void Administrator::addMember(MemberNode*& memberHead) {
     cout << ">> Member " << name << " registered.\n";
 }
 
-/* =========================================================
-   Remove Member
-   ========================================================= */
+//remove member
 void Administrator::removeMember(MemberNode*& memberHead) {
     if (!memberHead) return;
 
@@ -119,15 +88,8 @@ void Administrator::removeMember(MemberNode*& memberHead) {
     cout << ">> Member removed.\n";
 }
 
-/* =========================================================
-   Display Helpers
-   ========================================================= */
 void Administrator::displayAllGames(GameList& games) {
     cout << "\n--- Library Inventory ---\n";
-    /* while (gameHead) {
-        cout << "- " << gameHead->name << " (" << gameHead->yearPublished << ")\n";
-        gameHead = gameHead->next;
-    } */
     games.displayGames();
 }
 

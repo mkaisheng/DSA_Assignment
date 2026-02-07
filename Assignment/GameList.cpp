@@ -22,9 +22,7 @@ GameList::~GameList() {
 }
 
 
-/* =========================
-   Insert at Head
-   ========================= */
+//insert game 
 void GameList::insertGame(GameNode* newNode) {
     newNode->next = head;
     head = newNode;
@@ -33,9 +31,7 @@ void GameList::insertGame(GameNode* newNode) {
         rebuildIndex();
 }
 
-/* =========================
-   Load CSV
-   ========================= */
+//load games.csv
 void GameList::loadCSV(const string& filename) {
     ifstream file(filename);
     if (!file) {
@@ -54,7 +50,7 @@ void GameList::loadCSV(const string& filename) {
         GameNode* node = new GameNode();
         string temp;
 
-        // SPECIAL CASE: HANDLE NAMES WITH COMMAS
+		// special case to handle quoted names with commas (e,g "Catan, The")
         // Checks if the first character is a quote (")
         if (ss.peek() == '"') {
             ss.get();                     //get the open commas 
@@ -96,9 +92,7 @@ void GameList::loadCSV(const string& filename) {
     file.close();
 }
 
-/* =========================
-   Display Games
-   ========================= */
+//display
 void GameList::displayGames() {
     int count = 0;
     GameNode* curr = head;
@@ -113,9 +107,7 @@ void GameList::displayGames() {
     }
 }
 
-/* =========================
-   Count Nodes
-   ========================= */
+//count number of nodes ( ie.how many games)
 int GameList::countGames() {
     int count = 0;
     GameNode* curr = head;
@@ -346,9 +338,7 @@ void GameList::rebuildIndex() {
     }
 }
 
-/* =========================
-   Display Games by Players
-   ========================= */
+//display game from players
 void GameList::displayGamesByPlayers(int numPlayers) {
     cout << "\n--- Games for " << numPlayers << " Players ---\n";
 
