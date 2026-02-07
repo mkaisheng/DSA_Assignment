@@ -33,7 +33,6 @@ void displayUserMenu() {
     cout << "1. Admin\n";
     cout << "2. Member\n";
 	cout << "3. Search for a Game\n";
-	cout << "4. Display games based on number of players\n";
     cout << "0. Exit Program\n";
     cout << "Enter choice: ";
 }
@@ -347,13 +346,6 @@ int main() {
             }
             break;
 			  }
-        case 4: {
-            int numPlayers;
-            cout << "Enter number of players: ";
-            cin >> numPlayers;
-            games.displayGamesByPlayers(numPlayers);
-			break;
-        }
         case 0:
             cout << "Exiting program...\n";
             break;
