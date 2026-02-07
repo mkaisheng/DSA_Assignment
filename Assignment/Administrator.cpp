@@ -6,7 +6,7 @@ using namespace std;
 /* =========================================================
    Add Game (to Master List)
    ========================================================= */
-void Administrator::addGame(GameNode*& gameHead) {
+void Administrator::addGame(GameList& games) {
     GameNode* newNode = new GameNode();
 
     cout << "Enter Game Name: ";
@@ -19,8 +19,9 @@ void Administrator::addGame(GameNode*& gameHead) {
     cin.ignore(); // Clear buffer
 
     // Insert at Head of Master List
-    newNode->next = gameHead;
-    gameHead = newNode;
+    games.insertGame(newNode);
+    //newNode->next = gameHead;
+    //gameHead = newNode;
 
     cout << ">> Game added successfully.\n";
 }
@@ -28,14 +29,14 @@ void Administrator::addGame(GameNode*& gameHead) {
 /* =========================================================
    Remove Game (from Master List)
    ========================================================= */
-void Administrator::removeGame(GameNode*& gameHead) {
-    if (!gameHead) return;
+void Administrator::removeGame(GameList& games) {
+    //if (!gameHead) return;
 
     string target;
     cout << "Enter name of game to remove: ";
     getline(cin, target);
 
-    GameNode* curr = gameHead;
+    /* GameNode* curr = gameHead;
     GameNode* prev = nullptr;
 
     while (curr && curr->name != target) {
@@ -55,7 +56,8 @@ void Administrator::removeGame(GameNode*& gameHead) {
         prev->next = curr->next; // Removing middle/tail
     }
 
-    delete curr;
+    delete curr; */
+    games.removeGame(target);
     cout << ">> " << target << " deleted from system.\n";
 }
 
@@ -120,12 +122,13 @@ void Administrator::removeMember(MemberNode*& memberHead) {
 /* =========================================================
    Display Helpers
    ========================================================= */
-void Administrator::displayAllGames(GameNode* gameHead) {
+void Administrator::displayAllGames(GameList& games) {
     cout << "\n--- Library Inventory ---\n";
-    while (gameHead) {
+    /* while (gameHead) {
         cout << "- " << gameHead->name << " (" << gameHead->yearPublished << ")\n";
         gameHead = gameHead->next;
-    }
+    } */
+    games.displayGames();
 }
 
 void Administrator::displayBorrowSummary(MemberNode* memberHead) {

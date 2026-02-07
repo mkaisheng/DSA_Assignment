@@ -2,6 +2,7 @@
 #include <limits>
 #include "GameList.h"
 #include "Member.h"
+#include "Administrator.h"
 
 using namespace std;
 
@@ -12,6 +13,18 @@ void displaymemberchoices() {
     cout << "3. Display Borrowed Games\n";
     cout << "4. Display all games \n";
     cout << "0. Back to Main Menu\n"; // Changed from Exit to Back
+    cout << "Enter choice: ";
+}
+
+void displayadminchoices() {
+    cout << "\n--- Admin Menu ---\n";
+    cout << "1. Add Game\n";
+    cout << "2. Remove Game\n";
+    cout << "3. Add a Member\n";
+	cout << "4. Dispay all members\n";
+    cout << "5. Display Borrowed Games\n";
+	cout << "6. Display all games \n";
+    cout << "0. Back to Main Menu\n";
     cout << "Enter choice: ";
 }
 
@@ -30,6 +43,11 @@ int main() {
     // Create a Member
     Member member("M001", "John Doe", "123-456-7890");
 
+	Administrator admin;
+
+    GameNode* gameHead = nullptr;
+    MemberNode* memberHead = nullptr;
+
     int choice;
     do {
         displayUserMenu();
@@ -41,7 +59,63 @@ int main() {
 
         switch (choice) {
         case 1: {
-            cout << "Admin functionality not implemented yet.\n";
+            // === NESTED LOOP FOR ADMIN MENU ===
+            int adminChoice;
+            do {
+                displayadminchoices();
+                if (!(cin >> adminChoice)) {
+                    cin.clear();
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    continue;
+                }
+
+                switch (adminChoice) {
+                case 1: {
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    admin.addGame(games);
+                    break;
+                }
+                case 2: {
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    admin.removeGame(games);
+                    break;
+                }
+                case 3: {
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    admin.addMember(memberHead);
+                    break;
+                }
+                case 4: {
+                    if (!memberHead) {
+                        cout << "(No members registered)\n";
+                    }
+                    else {
+                        MemberNode* curr = memberHead;
+                        while (curr) {
+                            cout << "ID: " << curr->data->getID()
+                                << " , Name: " << curr->data->getName()
+                                << endl;
+                            curr = curr->next;
+                        }
+                    }
+                    break;
+                }
+                case 5: {
+                    admin.displayBorrowSummary(memberHead);
+                    break;
+                }
+                case 6: {
+                    games.displayGames();
+                    cout << "number of games: " << games.countGames() << endl;
+                    break;
+                }
+                case 0:
+                    cout << "Returning to Main Menu...\n";
+                    break;
+                default:
+                    cout << "Invalid choice. Try again.\n";
+                }
+            } while (adminChoice != 0);
             break;
         }
         case 2: {

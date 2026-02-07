@@ -20,11 +20,11 @@ struct MemberNode {
 class Administrator {
 public:
     // === Game Management ===
-    // We pass the pointer by reference (GameNode*&) so the Admin can change the real head
-    void addGame(GameNode*& gameHead);
+	// We pass the GameList by reference
+    void addGame(GameList& games);
 
     // Remove a game from the master list
-    void removeGame(GameNode*& gameHead);
+    void removeGame(GameList& games);
 
 
     // === Member Management ===
@@ -36,7 +36,7 @@ public:
 
     // === Reports ===
     // Displays all games currently in the system
-    void displayAllGames(GameNode* gameHead);
+    void displayAllGames(GameList& games);
 
     // Displays which members have borrowed which games
     void displayBorrowSummary(MemberNode* memberHead);
