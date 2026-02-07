@@ -62,9 +62,8 @@ public:
 	 GameNode* searchAVL(const string& name);
 	 int countGames();
 	 void removeGame(const string& name);
-	 void mergeSort(SortMode sort);
+	 void mergeSort();
+	
 
 	void rebuildIndex();
-
-
 };
