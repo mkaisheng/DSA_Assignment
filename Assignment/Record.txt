@@ -1,3 +1,11 @@
 MemberID,GameName
 [2026-02-07 21:48:30] Member: 123 (ID: 1) BORROWED game: "12 Days"
 [2026-02-07 22:02:53] Member: 213 (ID: 1) BORROWED game: "Adonis"
+[2026-02-07 23:43:52] Member: H (ID: 3) BORROWED game: "1 test"
+[2026-02-07 23:44:09] Member: H (ID: 3) BORROWED game: "Zombie Fluxx"
+[2026-02-07 23:44:30] Member: J (ID: 1) BORROWED game: "Reef"
+[2026-02-07 23:45:58] Member: 2345678876543 (ID: h) BORROWED game: "Abyss"
+[2026-02-07 23:46:06] Member: 2345678876543 (ID: h) BORROWED game: "Zombie Fluxx"
+[2026-02-07 23:46:17] Member: j (ID: 1) BORROWED game: "BANG!"
+[2026-02-07 23:47:01] Member: 2345678876543 (ID: h) RETURNED game: "Abyss"
+[2026-02-07 23:47:10] Member: j (ID: 1) BORROWED game: "Abyss"
