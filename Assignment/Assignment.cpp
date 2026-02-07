@@ -12,6 +12,7 @@ void displaymemberchoices() {
     cout << "2. Return Game\n";
     cout << "3. Display Borrowed Games\n";
     cout << "4. Display all games\n";
+    cout << "5. Record a Played Game\n";
     cout << "0. Back to Main Menu\n";
     cout << "Enter choice: ";
 }
@@ -310,6 +311,25 @@ int main() {
                     games.displayGames();
                     cout << "\nTotal games: " << games.countGames() << endl;
 
+                }
+                case 5: {
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                    string gameName;
+                    cout << "Enter the name of the game you played: ";
+                    getline(cin, gameName);
+
+                    string participants;
+                    cout << "Enter the IDs of all members who played (comma separated): ";
+                    getline(cin, participants);
+
+                    string winner;
+                    cout << "Enter the ID of the winner: ";
+                    getline(cin, winner);
+
+                    // Append to recordgames.txt
+                    activeMember->recordGamePlay(gameName, participants, winner);
+                    break;
                 }
                 case 0:
                     cout << "Returning to Main Menu...\n";

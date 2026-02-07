@@ -41,8 +41,12 @@
     <ClInclude Include="GameList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Dictionary.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Record.txt" />
+    <Text Include="recordgames.txt" />
   </ItemGroup>
 </Project>

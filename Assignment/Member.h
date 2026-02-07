@@ -28,6 +28,9 @@ public:
 
     // Display
     void printBorrowedGames();
+
+    //extra feature : allow user to record down their games
+    void recordGamePlay( const string& gameName,const string& participantIDs,const string& winnerID);
 };
 
 #endif

@@ -181,3 +181,22 @@ Member::~Member() {
         curr = next;
     }
 }
+
+void Member::recordGamePlay( const string& gameName, const string& participantIDs, const string& winnerID) {
+    ofstream outFile("recordgames.txt", ios::app);
+
+    if (!outFile) {
+        cout << "Error opening recordgames.txt\n";
+        return;
+    }
+
+    // Format:
+    // GameName | M001,M004,M007 | M004
+    outFile << gameName << " , "
+        << participantIDs << " , "
+        << winnerID << endl;
+
+    outFile.close();
+
+    cout << "Game play recorded successfully.\n";
+}
