@@ -20,6 +20,8 @@ GameList::~GameList() {
 
     deleteAVL(avlRoot);
 }
+
+
 /* =========================
    Insert at Head
    ========================= */
@@ -170,30 +172,60 @@ static void splitList(GameNode* source, GameNode*& front, GameNode*& back) {
     slow->next = nullptr;
 }
 
-static GameNode* mergeSorted(GameNode* a, GameNode* b) {
+GameNode* GameList::mergeSorted(GameNode* a, GameNode* b) {
     if (!a) return b;
     if (!b) return a;
 
-    GameNode* result = nullptr;
+    bool takeA = false;
 
-    if (a->name <= b->name) {
-        result = a;
-        result->next = mergeSorted(a->next, b);
+    switch (currentSort) {
+    case SortMode::NAME:
+        takeA = (a->name <= b->name);
+        break;
+
+    case SortMode::MIN_PLAYERS:
+        takeA = (a->minPlayers <= b->minPlayers);
+        break;
+
+    case SortMode::MAX_PLAYERS:
+        takeA = (a->maxPlayers <= b->maxPlayers);
+        break;
+
+    case SortMode::YEAR:
+        takeA = (a->yearPublished <= b->yearPublished);
+        break;
+    }
+
+    if (takeA) {
+        a->next = mergeSorted(a->next, b);
+        return a;
     }
     else {
-        result = b;
-        result->next = mergeSorted(a, b->next);
+        b->next = mergeSorted(a, b->next);
+        return b;
     }
-
-    return result;
 }
 
 /* =========================
    Merge Sort
    ========================= */
-void GameList::mergeSort() {
+void GameList::mergeSort(SortMode mode) {
+    currentSort = mode;
     mergeSortInternal(head);
-    rebuildIndex();
+    rebuildIndex(); // AVL rebuilt after sorting
+}
+void GameList::mergeSortInternal(GameNode*& node) {
+    if (!node || !node->next)
+        return;
+
+    GameNode* a;
+    GameNode* b;
+
+    splitList(node, a, b);
+    mergeSortInternal(a);
+    mergeSortInternal(b);
+
+    node = mergeSorted(a, b);
 }
 
 
@@ -314,16 +346,3 @@ void GameList::rebuildIndex() {
     }
 }
 
-void GameList::mergeSortInternal(GameNode*& node) {
-    if (!node || !node->next)
-        return;
-
-    GameNode* a;
-    GameNode* b;
-
-    splitList(node, a, b);
-    mergeSortInternal(a);
-    mergeSortInternal(b);
-
-    node = mergeSorted(a, b);
-}

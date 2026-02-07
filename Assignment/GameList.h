@@ -32,6 +32,14 @@ struct AVLNode {
 	AVLNode* right = nullptr;
 	int height = 1;
 };
+//Merge sort node to sort by preferences
+
+enum class SortMode {
+	NAME,
+	MIN_PLAYERS,
+	MAX_PLAYERS,
+	YEAR
+};
 
 class GameList
 {
@@ -39,19 +47,24 @@ private:
 	GameNode* head;
 	AVLNode* avlRoot;
 	bool suppressRebuild = false;
+	SortMode currentSort = SortMode::NAME;
+
 	void mergeSortInternal(GameNode*& node);
+	GameNode* mergeSorted(GameNode* a, GameNode* b);
 public:
 	GameList();
 	~GameList();
 
+	//admin functions
 	void insertGame( GameNode* newNode);
 	 void loadCSV(const string& filename);
 	 void displayGames();
 	 GameNode* searchAVL(const string& name);
 	 int countGames();
 	 void removeGame(const string& name);
-	 void mergeSort();
-	
+	 void mergeSort(SortMode sort);
 
 	void rebuildIndex();
+
+
 };

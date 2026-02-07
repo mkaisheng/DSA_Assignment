@@ -1,36 +1,33 @@
-#ifndef MEMBER_H // 1. Guard starts here
+#ifndef MEMBER_H
+
 #define MEMBER_H
-
 #include <string>
-#include <iostream>
-#include "GameList.h"
-
 using namespace std;
+
+// Forward declaration
+class GameList;
+struct GameNode;
 
 class Member {
 private:
     string memberID;
     string name;
     string phoneNumber;
-
-    GameNode* borrowedHead;
+    GameNode* borrowedHead;  // Head of member's borrowed games list
 
 public:
-    // Constructor
     Member(string id, string n, string phone);
+    ~Member();
 
-    // Getters
     string getID() const;
     string getName() const;
 
-   
-	void borrowGame(GameNode* game);
+    // Borrow and return operations
+    void borrowGame(GameNode* game);
+    void returnGame(const string& gameName, GameList* gameList);
 
-    // We return the game, removing it from 'borrowedHead'
-    void returnGame(string gameName);
-
-    // Display the list of games this member has
+    // Display
     void printBorrowedGames();
 };
 
-#endif // !MEMBER_H  // 2. Guard ends here
+#endif
