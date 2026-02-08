@@ -12,3 +12,5 @@ MemberID,GameName
 [2026-02-08 16:52:15] Member: 23456 (ID: 1) BORROWED game: "Ween"
 [2026-02-08 16:54:01] Member: 123 (ID: 1) BORROWED game: "12 Days"
 [2026-02-08 16:55:00] Member: 123 (ID: 1) RETURNED game: "12 Days"
+[2026-02-08 17:03:32] Member: 123 (ID: 1) BORROWED game: "12 Days"
+[2026-02-08 17:03:43] Member: 123 (ID: 1) RETURNED game: "12 Days"
