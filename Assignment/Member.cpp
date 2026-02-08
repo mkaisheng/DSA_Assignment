@@ -165,6 +165,7 @@ void Member::printBorrowedGames() {
 
 //extra feature : allow user to record down their games
 
+//extra feature : allow user to record down their games, takes in game name, participant IDs and winner ID
 void Member::recordGamePlay( const string& gameName, const string& participantIDs, const string& winnerID) {
     ofstream outFile("recordgames.txt", ios::app);
 

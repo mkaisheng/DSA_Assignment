@@ -6,6 +6,7 @@
 
 using namespace std;
 
+// Display menus
 void displaymemberchoices() {
     cout << "\n--- Borrowing Application ---\n";
     cout << "1. Borrow Game\n";
@@ -342,6 +343,7 @@ int main() {
             break;
         }
         case 3: {
+			// === SEARCH FOR A GAME ===
             cout << "Enter the name of the game to search: ";
             string gameName;
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -368,10 +370,12 @@ int main() {
             break;
 		}
         case 4: {
+			// === DISPLAY GAMES BASED ON NUMBER OF PLAYERS ===
             int numPlayers;
             cout << "Enter number of players: ";
             cin >> numPlayers;
 
+			// Sorting preference
             displaySortMenu();
 
             int sortChoice;
