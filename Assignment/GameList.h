@@ -57,13 +57,14 @@ public:
 
 	//admin functions
 	void insertGame( GameNode* newNode);
-	 void loadCSV(const string& filename);
-	 void displayGames();
-	 GameNode* searchAVL(const string& name);
-	 int countGames();
-	 void removeGame(const string& name);
-	 void mergeSort(SortMode mode);
-	 void displayGamesByPlayers(int numPlayers);
+	void loadCSV(const string& filename);
+	void displayGames();
+	GameNode* searchAVL(const string& name);
+	int countGames();
+	void removeGame(const string& name);
+
+	void mergeSort(SortMode mode);
+	void displayGamesByPlayers(int numPlayers);
 
 	void rebuildIndex();
 

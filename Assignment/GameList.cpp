@@ -338,7 +338,7 @@ void GameList::rebuildIndex() {
     }
 }
 
-//display game from players
+//Display game based on player count entered
 void GameList::displayGamesByPlayers(int numPlayers) {
     cout << "\n--- Games for " << numPlayers << " Players ---\n";
 

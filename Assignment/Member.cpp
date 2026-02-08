@@ -133,7 +133,7 @@ void Member::returnGame(const string& gameName, GameList* gameList) {
     cout << "Success: \"" << gameName << "\" returned by " << name << ".\n";
 }
 
-
+// display borrowed games
 void Member::printBorrowedGames() {
     cout << "Games borrowed by " << name << ":\n";
     if (!borrowedHead) {
@@ -163,6 +163,7 @@ Member::~Member() {
     }
 }
 
+//extra feature : allow user to record down their games, takes in game name, participant IDs and winner ID
 void Member::recordGamePlay( const string& gameName, const string& participantIDs, const string& winnerID) {
     ofstream outFile("recordgames.txt", ios::app);
 

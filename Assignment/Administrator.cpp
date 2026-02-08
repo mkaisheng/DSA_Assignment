@@ -88,11 +88,13 @@ void Administrator::removeMember(MemberNode*& memberHead) {
     cout << ">> Member removed.\n";
 }
 
+//display all games
 void Administrator::displayAllGames(GameList& games) {
     cout << "\n--- Library Inventory ---\n";
     games.displayGames();
 }
 
+//display all games borrowed by members
 void Administrator::displayBorrowSummary(MemberNode* memberHead) {
     cout << "\n=== BORROWING REPORT ===\n";
     while (memberHead) {
