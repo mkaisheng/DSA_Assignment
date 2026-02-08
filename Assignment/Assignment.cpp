@@ -311,7 +311,7 @@ int main() {
                     cout << "\n--- Game Library ---\n";
                     games.displayGames();
                     cout << "\nTotal games: " << games.countGames() << endl;
-
+                    break;
                 }
                 case 5: {
                     cin.ignore(numeric_limits<streamsize>::max(), '\n');

@@ -8,6 +8,7 @@
 
 using namespace std;
 
+//Janelle
 static const string GAME_CSV = "games.csv";
 static const string ADMIN_LOG = "Report.txt";
 

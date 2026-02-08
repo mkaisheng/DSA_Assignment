@@ -4,7 +4,7 @@
 #include <string>
 using namespace std;
 
-// Forward declaration
+//Kai Sheng 
 class GameList;
 struct GameNode;
 

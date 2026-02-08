@@ -14,11 +14,19 @@ Member::Member(string id, string n, string phone) {
     this->phoneNumber = phone;
     this->borrowedHead = nullptr;
 }
-
+//deconstructor
+Member::~Member() {
+    GameNode* curr = borrowedHead;
+    while (curr) {
+        GameNode* next = curr->next;
+        delete curr;
+        curr = next;
+    }
+}
 string Member::getID() const { return memberID; }
 string Member::getName() const { return name; }
 
-//helper: get c urrent timestamp
+//helper: get current timestamp
 string getCurrentTimestamp() {
     // Get current time using modern C++ chrono
     auto now = chrono::system_clock::now();
@@ -134,6 +142,7 @@ void Member::returnGame(const string& gameName, GameList* gameList) {
 }
 
 
+//traverse linearly and print borrowed games
 void Member::printBorrowedGames() {
     cout << "Games borrowed by " << name << ":\n";
     if (!borrowedHead) {
@@ -154,14 +163,7 @@ void Member::printBorrowedGames() {
 }
 
 
-Member::~Member() {
-    GameNode* curr = borrowedHead;
-    while (curr) {
-        GameNode* next = curr->next;
-        delete curr;
-        curr = next;
-    }
-}
+//extra feature : allow user to record down their games
 
 void Member::recordGamePlay( const string& gameName, const string& participantIDs, const string& winnerID) {
     ofstream outFile("recordgames.txt", ios::app);

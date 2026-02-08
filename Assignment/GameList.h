@@ -5,7 +5,7 @@
 
 using namespace std;
 
-/// GameNode to store game information
+/// Janelle
 struct GameNode {
 	string name;
 
@@ -22,8 +22,8 @@ struct GameNode {
 	GameNode* nextcopy = nullptr;
 };
 
-//AVL Node to search
 
+//Kai Sheng (AVL node to search and Sort Mode to enable sorting prefrences)
 struct AVLNode {
 	string key;            // game name
 	GameNode* gamePtr;     // pointer to linked list node
@@ -41,6 +41,7 @@ enum class SortMode {
 	YEAR
 };
 
+//Janelle
 class GameList
 {
 private:
@@ -55,16 +56,16 @@ public:
 	GameList();
 	~GameList();
 
-	//admin functions
-	void insertGame( GameNode* newNode);
+	 //Janelle
+	 void insertGame( GameNode* newNode);
 	 void loadCSV(const string& filename);
 	 void displayGames();
-	 GameNode* searchAVL(const string& name);
 	 int countGames();
 	 void removeGame(const string& name);
-	 void mergeSort(SortMode mode);
 	 void displayGamesByPlayers(int numPlayers);
 
-	void rebuildIndex();
-
+	 //Kai Sheng
+	 GameNode* searchAVL(const string& name);
+	 void mergeSort(SortMode mode);
+	 void rebuildIndex();
 };

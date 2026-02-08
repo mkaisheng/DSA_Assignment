@@ -137,7 +137,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Administrator.h" />
-    <ClInclude Include="Dictionary.h" />
     <ClInclude Include="GameList.h" />
     <ClInclude Include="Member.h" />
   </ItemGroup>

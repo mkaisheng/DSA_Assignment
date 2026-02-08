@@ -5,7 +5,10 @@
 
 using namespace std;
 
-void deleteAVL(AVLNode* node);
+
+void deleteAVL(AVLNode* node); //declare so that functions above deleteAVL knows that this function exist
+
+//Janelle//
 GameList::GameList() {
     head = nullptr;
     avlRoot = nullptr;
@@ -16,9 +19,9 @@ GameList::~GameList() {
         GameNode* next = curr->next;
         delete curr;
         curr = next;
-    }
+	} //deletes all nodes in linked list
 
-    deleteAVL(avlRoot);
+	deleteAVL(avlRoot); //deletes all nodes in AVL tree
 }
 
 
@@ -27,8 +30,8 @@ void GameList::insertGame(GameNode* newNode) {
     newNode->next = head;
     head = newNode;
 
-    if (!suppressRebuild)
-        rebuildIndex();
+	if (!suppressRebuild) //supress rebuild is essentially a flag to prevent rebuilding the AVL tree during bulk inserts 
+        rebuildIndex(); //e.g if i want to insert more than 1 game , i have supress rebuild on so it doesnt constantly rebulild
 }
 
 //load games.csv
@@ -118,14 +121,16 @@ int GameList::countGames() {
     return count;
 }
 
+//remove game from the name given
 void GameList::removeGame(const string& name) {
     if (!head) return;
 
+	// Special case: removing head
     if (head->name == name) {
         GameNode* temp = head;
         head = head->next;
         delete temp;
-        rebuildIndex();
+        rebuildIndex(); //rebuild the avl tree
         return;
     }
 
@@ -133,40 +138,65 @@ void GameList::removeGame(const string& name) {
     while (curr->next && curr->next->name != name) {
         curr = curr->next;
     }
-
+	//traverse until the name is found
     if (curr->next) {
         GameNode* temp = curr->next;
         curr->next = temp->next;
-        delete temp;
-        rebuildIndex();
+        delete temp; //connect the previous node from deleted to the next node from deleted and delete the chosen node
+		rebuildIndex(); //rebuild the avl tree
+    }
+}
+//display game from players
+void GameList::displayGamesByPlayers(int numPlayers) {
+    cout << "\n--- Games for " << numPlayers << " Players ---\n";
+
+    GameNode* curr = head;
+    bool found = false;
+
+    while (curr) {
+        if (curr->minPlayers <= numPlayers &&
+            numPlayers <= curr->maxPlayers) {
+
+            cout << curr->name << " ("
+                << curr->minPlayers << " - "
+                << curr->maxPlayers << " players, "
+                << curr->yearPublished << ")\n";
+
+            found = true;
+        }
+        curr = curr->next;
+    }
+
+    if (!found) {
+        cout << "No games available for this number of players.\n";
     }
 }
 
 
 
-/* =========================
-   Merge Sort Helpers
-   ========================= */
+//KAI SHENG S10268302J//
+//Merge sort helpers
 static void splitList(GameNode* source, GameNode*& front, GameNode*& back) {
     GameNode* slow = source;
-    GameNode* fast = source->next;
+	GameNode* fast = source->next; //start fast one step ahead
 
-    while (fast) {
+    while (fast) { 
         fast = fast->next;
         if (fast) {
-            slow = slow->next;
+            slow = slow->next; //?
             fast = fast->next;
         }
     }
 
     front = source;
-    back = slow->next;
+	back = slow->next; //breaks the list into two seperate lists
     slow->next = nullptr;
 }
 
+//merges 2 ALREADY sorted lists together
 GameNode* GameList::mergeSorted(GameNode* a, GameNode* b) {
-    if (!a) return b;
-    if (!b) return a;
+    if (!a) return b; //base cases
+    if (!b) return a; //if one list is empty return the other
 
     bool takeA = false;
 
@@ -188,8 +218,8 @@ GameNode* GameList::mergeSorted(GameNode* a, GameNode* b) {
         break;
     }
 
-    if (takeA) {
-        a->next = mergeSorted(a->next, b);
+	if (takeA) { //if a is smaller or equal to b based on current sort mode
+		a->next = mergeSorted(a->next, b); //recursively merge the rest
         return a;
     }
     else {
@@ -198,66 +228,73 @@ GameNode* GameList::mergeSorted(GameNode* a, GameNode* b) {
     }
 }
 
-/* =========================
-   Merge Sort
-   ========================= */
+//merge sort
 void GameList::mergeSort(SortMode mode) {
-    currentSort = mode;
+    currentSort = mode; 
     mergeSortInternal(head);
     rebuildIndex(); // AVL rebuilt after sorting
 }
+
 void GameList::mergeSortInternal(GameNode*& node) {
-    if (!node || !node->next)
+	if (!node || !node->next) //base case : 0 or 1 nodes
         return;
 
     GameNode* a;
     GameNode* b;
 
     splitList(node, a, b);
-    mergeSortInternal(a);
-    mergeSortInternal(b);
+	mergeSortInternal(a); //recursively call to split the list 
+    mergeSortInternal(b); 
 
-    node = mergeSorted(a, b);
+	node = mergeSorted(a, b); //recursively called to merge the 2 sorted lists
 }
 
 
-//AVL Tree
+//AVL Tree//
+//The AVL tree uses a search through name . It doesnt break when it is sorted by year / max players as it does comparisions based on the alphabetical value (ascii table) 
 int height(AVLNode* n) {
-    return n ? n->height : 0;
+    return n ? n->height : 0; //return height of node n( return 0 if no nodes)
 }
 
 int getBalance(AVLNode* n) {
-    return n ? height(n->left) - height(n->right) : 0;
+	return n ? height(n->left) - height(n->right) : 0; //return balance factor of node n ( return 0 if no nodes)
 }
 
+
+//Rotate right for imbalanced tree leaning to the left
 AVLNode* rotateRight(AVLNode* y) {
-    AVLNode* x = y->left;
-    AVLNode* T2 = x->right;
+    AVLNode* x = y->left; //x becomes new root ( ie. left of y is the new root)
+    AVLNode* T2 = x->right; //t2 stored temporarily
+    
+    //perform rotation here
+	x->right = y; //insert y to the right of x
+	y->left = T2; //t2 becomes left child of y
 
-    x->right = y;
-    y->left = T2;
-
+    //update heights
     y->height = max(height(y->left), height(y->right)) + 1;
     x->height = max(height(x->left), height(x->right)) + 1;
 
-    return x;
+    return x; //x is new subtree root
 }
 
+
+//Rotate left for imbalanced tree leaning to the right
 AVLNode* rotateLeft(AVLNode* x) {
-    AVLNode* y = x->right;
+    AVLNode* y = x->right; // y is the root
     AVLNode* T2 = y->left;
 
-    y->left = x;
-    x->right = T2;
+	//perform rotation here
+    y->left = x; //insert x to the left of root
+	x->right = T2; //t2 becomes right child of x
 
     x->height = max(height(x->left), height(x->right)) + 1;
     y->height = max(height(y->left), height(y->right)) + 1;
 
     return y;
 }
-
+//Insert into AVL tree
 AVLNode* insertAVL(AVLNode* node, GameNode* game) {
-    if (!node) {
+	if (!node) { //base case : empty tree
         return new AVLNode{
             game->name,
             game,
@@ -266,12 +303,15 @@ AVLNode* insertAVL(AVLNode* node, GameNode* game) {
             nullptr,
             1
         };
-    }
+    } 
+	//if game with same name already exists , insert into linked list of copies
     if (game->name == node->key) {
         game->nextcopy = node->headOfCopies;
         node->headOfCopies = game;
         return node;
     }
+
+	//bst insertion : traverse left or right based on comparison of names
     if (game->name < node->key)
         node->left = insertAVL(node->left, game);
     else
@@ -279,7 +319,7 @@ AVLNode* insertAVL(AVLNode* node, GameNode* game) {
 
     node->height = 1 + max(height(node->left), height(node->right));
 
-    int balance = getBalance(node);
+    int balance = getBalance(node); //checks for imbalance
 
     // Left Left
     if (balance > 1 && game->name < node->left->key)
@@ -319,7 +359,7 @@ GameNode* GameList::searchAVL(const string& name) {
 }
 
 void deleteAVL(AVLNode* node) {
-    if (!node) return;
+    if (!node) return; //post order deletion
     deleteAVL(node->left);
     deleteAVL(node->right);
     delete node;
@@ -335,32 +375,6 @@ void GameList::rebuildIndex() {
     while (curr != nullptr) {
         avlRoot = insertAVL(avlRoot, curr);
         curr = curr->next;
-    }
-}
-
-//display game from players
-void GameList::displayGamesByPlayers(int numPlayers) {
-    cout << "\n--- Games for " << numPlayers << " Players ---\n";
-
-    GameNode* curr = head;
-    bool found = false;
-
-    while (curr) {
-        if (curr->minPlayers <= numPlayers &&
-            numPlayers <= curr->maxPlayers) {
-
-            cout << curr->name << " ("
-                << curr->minPlayers << " - "
-                << curr->maxPlayers << " players, "
-                << curr->yearPublished << ")\n";
-
-            found = true;
-        }
-        curr = curr->next;
-    }
-
-    if (!found) {
-        cout << "No games available for this number of players.\n";
     }
 }
 
